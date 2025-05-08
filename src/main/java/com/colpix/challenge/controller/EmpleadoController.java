@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.Collections;
 
 @RestController
 @RequestMapping("/api/empleados")
@@ -20,8 +21,17 @@ public class EmpleadoController {
     }
     
     @PostMapping
-    public ResponseEntity<Empleado> saveOrUpdate(@RequestBody Empleado empleado) {
-        return ResponseEntity.ok(empleadoService.saveOrUpdate(empleado));
+    public ResponseEntity<?> saveOrUpdate(@RequestBody Empleado empleado) {
+        if(empleado.getId()!=null){
+            System.err.println(empleado.getNombre());
+            if(empleado.getEmail() == null || empleado.getSupervisorId() == null || empleado.getNombre() == null){
+                String mensajeError = "Faltan campos obligatorios: nombre, email y supervisor_id son requeridos.";
+                return ResponseEntity.badRequest().body(Collections.singletonMap("error", mensajeError));
+            } else 
+                return ResponseEntity.ok(empleadoService.saveOrUpdate(empleado));
+        } else
+            return ResponseEntity.ok(empleadoService.saveOrUpdate(empleado));
+
     }
     
     @GetMapping
