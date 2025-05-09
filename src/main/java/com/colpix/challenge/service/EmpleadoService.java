@@ -31,12 +31,10 @@ public class EmpleadoService {
     private Empleado updateEmpleado(Empleado empleado) {
         return empleadoRepository.findById(empleado.getId())
             .map(existente -> {
-                // Copia solo los campos actualizables
                 existente.setNombre(empleado.getNombre());
                 existente.setEmail(empleado.getEmail());
                 existente.setSupervisorId(empleado.getSupervisorId());
                 existente.setFechaActualizacion(new Date());
-                // Mantiene automáticamente la fechaCreacion original
                 return empleadoRepository.save(existente);
             })
             .orElseThrow(() -> new RuntimeException("Empleado con ID " + empleado.getId() + " no encontrado"));
